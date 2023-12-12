@@ -6,6 +6,7 @@ public class ResumeDto {
     User owner;
     String post;
     String fullname;
+    String photoImage64;
     String phone;
     String sex;
     String age;
@@ -20,10 +21,11 @@ public class ResumeDto {
     public ResumeDto() {
     }
 
-    public ResumeDto(User owner, String post, String fullname, String phone, String sex, String age, String experience, String city, String additional, String personalQualities) {
+    public ResumeDto(User owner, String post, String fullname, String photoImage64, String phone, String sex, String age, String experience, String city, String additional, String personalQualities) {
         this.owner = owner;
         this.post = post;
         this.fullname = fullname;
+        this.photoImage64 = photoImage64;
         this.phone = phone;
         this.sex = sex;
         this.age = age;
@@ -111,5 +113,13 @@ public class ResumeDto {
 
     public void setPersonalQualities(String personalQualities) {
         this.personalQualities = personalQualities;
+    }
+
+    public String getPhotoImage64() {
+        return photoImage64;
+    }
+
+    public void setPhotoImage64(String photoImage64) {
+        this.photoImage64 = photoImage64;
     }
 }

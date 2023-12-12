@@ -54,6 +54,7 @@ public class ResumeService {
             resume.setAdditional(r.getAdditional());
             resume.setPersonalQualities(r.getPersonalQualities());
             resume.setFullname(r.getFullname());
+            resume.setPhotoImage64(r.getPhotoImage64());
             resume.setPhone(r.getPhone());
             resume.setDate();
             resumeRepo.save(resume);
@@ -101,6 +102,7 @@ public class ResumeService {
             resume.setAdditional(resumeDto.getAdditional());
             resume.setPersonalQualities(resumeDto.getPersonalQualities());
             resume.setFullname(resumeDto.getFullname());
+            resume.setPhotoImage64(resumeDto.getPhotoImage64());
             resume.setPhone(resumeDto.getPhone());
 
 

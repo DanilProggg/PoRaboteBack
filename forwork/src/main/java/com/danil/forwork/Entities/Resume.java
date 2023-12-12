@@ -12,6 +12,8 @@ public class Resume {
     @ManyToOne
     User owner;
     String fullname;
+    @Column(columnDefinition="TEXT")
+    String photoImage64;
     String post;
     String sex;
     String age;
@@ -122,5 +124,13 @@ public class Resume {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getPhotoImage64() {
+        return photoImage64;
+    }
+
+    public void setPhotoImage64(String photoImage64) {
+        this.photoImage64 = photoImage64;
     }
 }
