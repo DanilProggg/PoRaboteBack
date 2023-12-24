@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .cors(withDefaults())
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/auth/reg",
-                                "api/vacancies/all/*",
+                                "/api/vacancies/all/*",
                                 "/api/resumes/all/*",
                                 "/api/vacancies/byId/*",
                                 "/api/resumes/byId/*")

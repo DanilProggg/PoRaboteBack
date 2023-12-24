@@ -6,10 +6,11 @@ public class ResumeDto {
     User owner;
     String post;
     String fullname;
+    String photoImage64;
     String phone;
     String sex;
-    String age;
-    String experience;
+    Long age;
+    int experience;
     String city;
     String additional;
     String personalQualities;
@@ -20,18 +21,7 @@ public class ResumeDto {
     public ResumeDto() {
     }
 
-    public ResumeDto(User owner, String post, String fullname, String phone, String sex, String age, String experience, String city, String additional, String personalQualities) {
-        this.owner = owner;
-        this.post = post;
-        this.fullname = fullname;
-        this.phone = phone;
-        this.sex = sex;
-        this.age = age;
-        this.experience = experience;
-        this.city = city;
-        this.additional = additional;
-        this.personalQualities = personalQualities;
-    }
+
 
     public User getOwner() {
         return owner;
@@ -57,19 +47,19 @@ public class ResumeDto {
         this.sex = sex;
     }
 
-    public String getAge() {
+    public Long getAge() {
         return age;
     }
 
-    public void setAge(String age) {
+    public void setAge(Long age) {
         this.age = age;
     }
 
-    public String getExperience() {
+    public int getExperience() {
         return experience;
     }
 
-    public void setExperience(String experience) {
+    public void setExperience(int experience) {
         this.experience = experience;
     }
 
@@ -111,5 +101,13 @@ public class ResumeDto {
 
     public void setPersonalQualities(String personalQualities) {
         this.personalQualities = personalQualities;
+    }
+
+    public String getPhotoImage64() {
+        return photoImage64;
+    }
+
+    public void setPhotoImage64(String photoImage64) {
+        this.photoImage64 = photoImage64;
     }
 }

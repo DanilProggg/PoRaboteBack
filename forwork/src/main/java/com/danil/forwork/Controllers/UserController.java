@@ -5,6 +5,7 @@ import com.danil.forwork.Services.UserService;
 import com.danil.forwork.dtos.UserDto;
 import com.danil.forwork.dtos.UserInfoDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,11 @@ public class UserController {
     @PostMapping("/user")
     public ResponseEntity<?> putUserInfo(Principal principal, @RequestBody UserInfoDto userInfoDto){
         return userService.putUserInfoService(principal, userInfoDto);
+    }
+
+    @PostMapping("/users/{page}")
+    public Page<User> getUsers(@PathVariable int page, @RequestBody List<Long> ids){
+        return userService.getRespondedUsers(ids, page);
     }
 
 }

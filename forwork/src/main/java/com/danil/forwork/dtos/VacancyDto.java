@@ -9,7 +9,7 @@ public class VacancyDto {
     String description;
     int salary;
     String work_time;
-    String experience;
+    int experience;
     String organization;
 
     String organizationImage64;
@@ -44,11 +44,11 @@ public class VacancyDto {
         this.work_time = work_time;
     }
 
-    public String getExperience() {
+    public int getExperience() {
         return experience;
     }
 
-    public void setExperience(String experience) {
+    public void setExperience(int experience) {
         this.experience = experience;
     }
 

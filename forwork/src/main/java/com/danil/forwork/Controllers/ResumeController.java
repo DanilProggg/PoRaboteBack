@@ -1,5 +1,6 @@
 package com.danil.forwork.Controllers;
 
+import com.danil.forwork.Entities.Filter;
 import com.danil.forwork.Entities.Resume;
 import com.danil.forwork.Entities.Vacancy;
 import com.danil.forwork.Exceptions.VacancyNotFoundException;
@@ -31,15 +32,15 @@ public class ResumeController {
         return resumeService.addResumeService(user,resume);
     }
 
-    @GetMapping("/all/{page}")
-    public Page<Resume> getAllResumes(@PathVariable int page){
-        return resumeService.getAllResumesService(page);
+    @PostMapping("/all/{page}")
+    public Page<Resume> getAllResumes(@PathVariable int page,  @RequestBody Filter filter){
+        return resumeService.getAllResumesService(page, filter.getInput(), filter.getAge(),filter.getCity(),filter.getExperience());
     }
 
     //==============
 
-    @PostMapping("/favorites")
-    public ResponseEntity<?> addFavoriteResume(Principal principal,@RequestBody Long id) throws VacancyNotFoundException {
+    @GetMapping("/favorites/add/{id}")
+    public ResponseEntity<?> addFavoriteResume(Principal principal,@PathVariable Long id) throws VacancyNotFoundException {
         return resumeService.addFavoriteResumesService(principal,id);
     }
 
@@ -52,6 +53,10 @@ public class ResumeController {
         return resumeService.deleteFavoritesResumesService(principal, id);
     }
 
+    @GetMapping("/favorites/status/{resume_id}")
+    public Boolean getFavoriteStatus(Principal principal, @PathVariable Long resume_id){
+        return resumeService.getFavoriteStatusService(principal, resume_id);
+    }
 
 
 
@@ -69,5 +74,16 @@ public class ResumeController {
     @PutMapping("/my/update/{id}")
     public ResponseEntity<?> updateById(Principal principal, @PathVariable Long id, @RequestBody ResumeDto resumeDto){
         return resumeService.updateResumeById(principal, id, resumeDto);
+    }
+
+    @GetMapping("/response/{resume_id}")
+    public ResponseEntity<?> toResponse(Principal principal,@PathVariable Long resume_id){
+        return resumeService.toResponseService(principal,resume_id);
+    }
+
+    //Метод для получения состояния отклика
+    @GetMapping("/response/status/{resume_id}")
+    public Boolean getStatus(Principal principal, @PathVariable Long resume_id){
+        return resumeService.getStatusService(principal, resume_id);
     }
 }

@@ -32,8 +32,8 @@ public class ResumeService {
 
 
 
-    public Page<Resume> getAllResumesService(int page){
-        return resumeRepo.findAll(PageRequest.of(page,pageSize, Sort.by(Sort.Direction.DESC,"date")));
+    public Page<Resume> getAllResumesService(int page, String input, int age, String city, int experience){
+        return resumeRepo.findAll(PageRequest.of(page,pageSize, Sort.by(Sort.Direction.DESC,"date")), input, age,city,experience);
     }
     public Page<Resume> getMyResumesService(Principal user, int page) throws UsernameNotFoundException{
         User u = userRepo.findByEmail(user.getName()).orElseThrow(()-> new UsernameNotFoundException("Текущего пользователя не существует"));
@@ -56,6 +56,7 @@ public class ResumeService {
             resume.setFullname(r.getFullname());
             resume.setPhone(r.getPhone());
             resume.setDate();
+            resume.setPhotoImage64(r.getPhotoImage64());
             resumeRepo.save(resume);
             return ResponseEntity.ok("Резюме создано");
         } catch (Exception e){
@@ -102,6 +103,7 @@ public class ResumeService {
             resume.setPersonalQualities(resumeDto.getPersonalQualities());
             resume.setFullname(resumeDto.getFullname());
             resume.setPhone(resumeDto.getPhone());
+            resume.setPhotoImage64(resumeDto.getPhotoImage64());
 
 
             if (resume.getOwner().getId().equals(current_user.getId())) {
@@ -156,5 +158,33 @@ public class ResumeService {
         } catch (Exception e){
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
+    }
+
+    public Boolean getFavoriteStatusService(Principal principal, Long resume_id){
+        Resume resume = resumeRepo.findById(resume_id).orElseThrow(()->new ResumeNotFoundException("Вакансия не найдена"));
+        User user = userRepo.findByEmail(principal.getName()).orElseThrow(()->new UsernameNotFoundException("Пользователь не найден"));
+        return user.getFavoritesResumes().contains(resume_id);
+    }
+
+    public ResponseEntity<?> toResponseService(Principal principal, Long resume_id){
+        try {
+            User user = userRepo.findByEmail(principal.getName()).orElseThrow(()->new UsernameNotFoundException("Пользователь не найден"));
+            Resume resume = resumeRepo.findById(resume_id).orElseThrow(()->new ResumeNotFoundException("Резюме не найдено"));
+            if (resume.getResponded().contains(user.getId())) {
+                return new ResponseEntity<>("Вы уже откликнулись на это резюме", HttpStatus.BAD_REQUEST);
+            }
+            resume.setResponded(user.getId());
+            resumeRepo.save(resume);
+            return ResponseEntity.ok("Отклик оставлен");
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+    public Boolean getStatusService(Principal principal, Long vacancy_id){
+        Resume resume = resumeRepo.findById(vacancy_id).orElseThrow(()->new ResumeNotFoundException("Резюме не найдено"));
+        User user = userRepo.findByEmail(principal.getName()).orElseThrow(()->new UsernameNotFoundException("Пользователь не найден"));
+        return resume.getResponded().contains(user.getId());
     }
 }
