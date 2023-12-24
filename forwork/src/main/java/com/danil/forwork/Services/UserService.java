@@ -5,6 +5,9 @@ import com.danil.forwork.Entities.User;
 import com.danil.forwork.Repos.UserRepo;
 import com.danil.forwork.dtos.UserDto;
 import com.danil.forwork.dtos.UserInfoDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -74,6 +78,10 @@ public class UserService implements UserDetailsService {
         } catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
 
+    int pageSize = 10;//Количество отображаемых пользователей за 1 раз
+    public Page<User> getRespondedUsers(List<Long> ids, int page){
+        return userRepo.findAllByIdIn(ids, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
     }
 }

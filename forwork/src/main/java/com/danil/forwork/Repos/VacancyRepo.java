@@ -16,7 +16,12 @@ import java.util.Optional;
 @Repository
 public interface VacancyRepo extends JpaRepository<Vacancy,Long> {
     Optional<Vacancy> findById(Long id);
-    Page<Vacancy> findAllByIdIn(List<Long> ids, PageRequest pageRequest);//!!!!
+    Page<Vacancy> findAllByIdIn(List<Long> ids, PageRequest pageRequest);
+
+
+    //Запрос с использованием фильтра
+    @Query(value = "SELECT * FROM vacancy WHERE post ILIKE ?1% AND salary >= ?2 AND city ILIKE ?3% AND experience <= ?4", nativeQuery = true)
+    Page<Vacancy> findAll(PageRequest pageRequest, String input, int salary, String city, int experience);
 
     //Собственный запрос для поиска создателя вакансии
     @Query(value = "SELECT * FROM vacancy WHERE owner_id = ?1", nativeQuery = true)

@@ -37,9 +37,9 @@ public class VacancyService {
 
 
     //Претендент на то чтобы оставить
-    public Page<Vacancy> getAllWithPaginationService(int offset) {
+    public Page<Vacancy> getAllWithPaginationService(int offset, String input, int salary, String city, int experience) {
 
-        Page<Vacancy> page = vacancyRepo.findAll(PageRequest.of(offset, pageSize, Sort.by(Sort.Direction.DESC, "date"))); //Отсортировать все вакансии по дате публикации по убыванию
+        Page<Vacancy> page = vacancyRepo.findAll(PageRequest.of(offset, pageSize, Sort.by(Sort.Direction.DESC, "date")), input, salary, city, experience); //Отсортировать все вакансии по дате публикации по убыванию
         return page;
     }
 
@@ -102,6 +102,12 @@ public class VacancyService {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
+
+    public Boolean getFavoriteStatusService(Principal principal, Long vacancy_id){
+        Vacancy vacancy = vacancyRepo.findById(vacancy_id).orElseThrow(()->new VacancyNotFoundException("Вакансия не найдена"));
+        User user = userRepo.findByEmail(principal.getName()).orElseThrow(()->new UsernameNotFoundException("Пользователь не найден"));
+        return user.getFavoritesVacancies().contains(vacancy_id);
+    }
 //=========================================================
 
 
@@ -142,7 +148,7 @@ public class VacancyService {
         }
     }
 
-    public ResponseEntity<?> updateVacancyById(Principal principal,Long id, VacancyDto vacancyDto){
+    public ResponseEntity<?> updateVacancyByIdService(Principal principal,Long id, VacancyDto vacancyDto){
         try {
             User current_user = userRepo.findByEmail(principal.getName()).orElseThrow(() -> new UsernameNotFoundException("Текущего пользователя не существует"));
             Vacancy vacancy = vacancyRepo.findById(id).orElseThrow(()->new VacancyNotFoundException("Вакансия не найдена"));
@@ -168,6 +174,27 @@ public class VacancyService {
     }
 
 
+    public ResponseEntity<?> toResponseService(Principal principal, Long vacancy_id){
+        try {
+            User user = userRepo.findByEmail(principal.getName()).orElseThrow(()->new UsernameNotFoundException("Пользователь не найден"));
+            Vacancy vacancy = vacancyRepo.findById(vacancy_id).orElseThrow(()->new VacancyNotFoundException("Вакансия не найден"));
+            if (vacancy.getResponded().contains(user.getId())) {
+                return new ResponseEntity<>("Вы уже откликнулись на эту вакансию", HttpStatus.BAD_REQUEST);
+            }
+            vacancy.setResponded(user.getId());
+            vacancyRepo.save(vacancy);
+            return ResponseEntity.ok("Отклик оставлен");
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+    public Boolean getStatusService(Principal principal, Long vacancy_id){
+        Vacancy vacancy = vacancyRepo.findById(vacancy_id).orElseThrow(()->new VacancyNotFoundException("Вакансия не найдена"));
+        User user = userRepo.findByEmail(principal.getName()).orElseThrow(()->new UsernameNotFoundException("Пользователь не найден"));
+        return vacancy.getResponded().contains(user.getId());
+    }
 
 
 

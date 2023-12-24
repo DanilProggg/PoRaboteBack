@@ -17,7 +17,7 @@ public class Vacancy {
     String post;
     String description;
     String work_time;
-    String experience;
+    int experience;
     String organization;
     @Column(columnDefinition="TEXT")
     String organizationImage64;
@@ -75,11 +75,11 @@ public class Vacancy {
         this.work_time = work_time;
     }
 
-    public String getExperience() {
+    public int getExperience() {
         return experience;
     }
 
-    public void setExperience(String experience) {
+    public void setExperience(int experience) {
         this.experience = experience;
     }
 

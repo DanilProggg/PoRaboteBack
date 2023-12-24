@@ -1,8 +1,11 @@
 package com.danil.forwork.Controllers;
 
+import com.danil.forwork.Entities.Filter;
+import com.danil.forwork.Entities.User;
 import com.danil.forwork.Entities.Vacancy;
 import com.danil.forwork.Exceptions.VacancyNotFoundException;
 import com.danil.forwork.Repos.VacancyRepo;
+import com.danil.forwork.Services.UserService;
 import com.danil.forwork.Services.VacancyService;
 import com.danil.forwork.dtos.VacancyDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +25,17 @@ public class VacancyController {
     @Autowired
     VacancyRepo vacancyRepo;
     @Autowired
-
     VacancyService vacancyService;
 
+    @Autowired
+    UserService userService;
+
     //========================================
 
     //========================================
-    @GetMapping("/all/{page}")
-    public Page<Vacancy> getAllVacancy(@PathVariable int page){
-        return vacancyService.getAllWithPaginationService(page);
+    @PostMapping("/all/{page}")
+    public Page<Vacancy> getAllVacancy(@PathVariable int page, @RequestBody Filter filter){
+        return vacancyService.getAllWithPaginationService(page, filter.getInput(), filter.getSalary(), filter.getCity(), filter.getExperience());
     }
 
 
@@ -46,11 +51,12 @@ public class VacancyController {
         return vacancyService.createVacancyService(vacancyDto, user);
     }
 
-    @PostMapping("/favorites")
-    public ResponseEntity<?> addFavoriteVacancies(Principal principal,@RequestBody Long id) throws VacancyNotFoundException {
+
+    //=====
+    @GetMapping("/favorites/add/{id}")
+    public ResponseEntity<?> addFavoriteVacancies(Principal principal,@PathVariable Long id) throws VacancyNotFoundException {
         return vacancyService.addFavoriteVacancyService(principal,id);
     }
-
     @GetMapping("/favorites/{page}")
     public Page<Vacancy> getFavoriteVacancies(Principal user, @PathVariable int page){
         return vacancyService.getFavoritesVacanciesService(user, page);
@@ -59,12 +65,10 @@ public class VacancyController {
     public ResponseEntity<?> deleteFavoriteVacancies(Principal principal, @PathVariable Long id){
         return vacancyService.deleteFavoritesVacanciesService(principal, id);
     }
-
-
-
-
-
-
+    @GetMapping("/favorites/status/{vacancy_id}")
+    public Boolean getFavoriteStatus(Principal principal, @PathVariable Long vacancy_id){
+        return vacancyService.getFavoriteStatusService(principal, vacancy_id);
+    }
 
 
 
@@ -83,8 +87,22 @@ public class VacancyController {
     //Для обновления данных о вакансие
     @PutMapping("/my/update/{id}")
     public ResponseEntity<?> updateById(Principal principal, @PathVariable Long id, @RequestBody VacancyDto vacancyDto){
-        return vacancyService.updateVacancyById(principal, id, vacancyDto);
+        return vacancyService.updateVacancyByIdService(principal, id, vacancyDto);
     }
+
+
+    @GetMapping("/response/{vacancy_id}")
+    public ResponseEntity<?> toResponse(Principal principal,@PathVariable Long vacancy_id){
+        return vacancyService.toResponseService(principal,vacancy_id);
+    }
+
+    //Метод для получения состояния отклика
+    @GetMapping("/response/status/{vacancy_id}")
+    public Boolean getStatus(Principal principal, @PathVariable Long vacancy_id){
+        return vacancyService.getStatusService(principal, vacancy_id);
+    }
+
+
 
 
 
